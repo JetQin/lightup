@@ -32,17 +32,19 @@ exports.submit = function (dir) {
     var path = join(dir, img.name);
     console.log('img=>'+img.path+',name=>'+path);
 
-    // fs.writeFile( path,fs.createWriteStream(img.path) ,function(err){
    fs.rename(img.path, path ,function(err){
       if (err) return next(err);
 
       Photo.create({
         name: name,
-        path: img.name
+        path: img.name,
+        data: fs.readFileSync(path).toString('base64'),
+        contentType:path.substr(path.indexOf(".")+1,path.length)
       }, function(err) {
         if (err) return next(err);
         res.redirect('/');
       });
+    
     });
   };
 };
